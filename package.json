@@ -1,0 +1,76 @@
+{
+  "name": "analytics-proxy",
+  "version": "1.0.0",
+  "description": "A TypeScript frontend library that acts as a proxy for multiple analytics providers",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "dev": "vite build --watch",
+    "build": "vite build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "preview": "vite preview",
+    "examples:install": "cd examples && npm install",
+    "examples:dev": "cd examples && npm run dev",
+    "examples:dev:dist": "npm run build && cd examples && npm run dev:dist",
+    "examples:build": "cd examples && npm run build"
+  },
+  "keywords": [
+    "analytics",
+    "proxy",
+    "mixpanel",
+    "google-analytics",
+    "ga4",
+    "logrocket",
+    "amplitude",
+    "typescript"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/amplitude-js": "^8.16.5",
+    "@types/mixpanel-browser": "^2.49.0",
+    "@types/node": "^20.0.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "@vitest/ui": "^1.6.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "eslint": "^8.57.0",
+    "jsdom": "^24.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "~5.4.5",
+    "vite": "^5.2.11",
+    "vite-plugin-dts": "^4.3.0",
+    "vitest": "^1.6.0"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ]
+}

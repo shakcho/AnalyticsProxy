@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Proxy Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        .status {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .enabled {
+            background: #28a745;
+            color: white;
+        }
+        .disabled {
+            background: #dc3545;
+            color: white;
+        }
+        .log {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 20px 0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #007bff;
+            background: white;
+        }
+        .log-entry.error {
+            border-left-color: #dc3545;
+            color: #dc3545;
+        }
+        .log-entry.success {
+            border-left-color: #28a745;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+    <h1>Analytics Proxy Demo</h1>
+    <p>This demo shows how the Analytics Proxy library works with multiple providers.</p>
+    <div class="container" style="background: #e7f3ff; border-left: 4px solid #007bff;">
+        <strong>🚀 Automatic Script Loading:</strong> Each enabled provider automatically loads its required script from CDN. No manual script tags needed!
+    </div>
+
+    <div class="container">
+        <h2>Provider Status</h2>
+        <div id="providerStatus"></div>
+        <div style="margin-top: 15px;">
+            <button onclick="toggleAllProviders(true)">Enable All</button>
+            <button onclick="toggleAllProviders(false)">Disable All</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Analytics Actions</h2>
+        <button onclick="trackEvent()">Track Event</button>
+        <button onclick="identifyUser()">Identify User</button>
+        <button onclick="trackPageView()">Track Page View</button>
+        <button onclick="setGlobalProperties()">Set Global Properties</button>
+    </div>
+
+    <div class="container">
+        <h2>Configuration</h2>
+        <button onclick="updateConfig()">Update Config</button>
+        <button onclick="showConfig()">Show Current Config</button>
+    </div>
+
+    <div class="container">
+        <h2>Event Log</h2>
+        <div id="eventLog" class="log"></div>
+        <button onclick="clearLog()">Clear Log</button>
+    </div>
+
+    <!-- Load the analytics proxy library -->
+    <script type="module">
+        // Note: In a real implementation, you would build and load the compiled library
+        // This is a simplified demo structure
+        
+        // Mock analytics proxy for demo purposes
+        class MockAnalyticsProxy {
+            constructor(config) {
+                this.config = config;
+                this.providers = new Map();
+                this.globalProperties = {};
+                this.initializeProviders();
+                this.log('AnalyticsProxy initialized', config);
+            }
+
+            initializeProviders() {
+                if (this.config.providers.mixpanel?.enabled) {
+                    this.providers.set('mixpanel', { name: 'mixpanel', enabled: true });
+                }
+                if (this.config.providers.ga4?.enabled) {
+                    this.providers.set('ga4', { name: 'ga4', enabled: true });
+                }
+                if (this.config.providers.logrocket?.enabled) {
+                    this.providers.set('logrocket', { name: 'logrocket', enabled: true });
+                }
+                if (this.config.providers.amplitude?.enabled) {
+                    this.providers.set('amplitude', { name: 'amplitude', enabled: true });
+                }
+            }
+
+            trackEvent(event) {
+                this.log('Event tracked', event);
+                this.providers.forEach(provider => {
+                    if (provider.enabled) {
+                        this.log(`Event sent to ${provider.name}`, event);
+                    }
+                });
+            }
+
+            identifyUser(user) {
+                this.log('User identified', user);
+                this.providers.forEach(provider => {
+                    if (provider.enabled) {
+                        this.log(`User data sent to ${provider.name}`, user);
+                    }
+                });
+            }
+
+            trackPageView(pageView) {
+                this.log('Page view tracked', pageView);
+                this.providers.forEach(provider => {
+                    if (provider.enabled) {
+                        this.log(`Page view sent to ${provider.name}`, pageView);
+                    }
+                });
+            }
+
+            setGlobalProperties(properties) {
+                this.globalProperties = { ...this.globalProperties, ...properties };
+                this.log('Global properties updated', properties);
+            }
+
+            enableProvider(name) {
+                const provider = this.providers.get(name);
+                if (provider) {
+                    provider.enabled = true;
+                    this.log(`Provider ${name} enabled`);
+                }
+            }
+
+            disableProvider(name) {
+                const provider = this.providers.get(name);
+                if (provider) {
+                    provider.enabled = false;
+                    this.log(`Provider ${name} disabled`);
+                }
+            }
+
+            enableAllProviders() {
+                this.providers.forEach(provider => provider.enabled = true);
+                this.log('All providers enabled');
+            }
+
+            disableAllProviders() {
+                this.providers.forEach(provider => provider.enabled = false);
+                this.log('All providers disabled');
+            }
+
+            getProviderStatus() {
+                const status = {};
+                this.providers.forEach((provider, name) => {
+                    status[name] = provider.enabled;
+                });
+                return status;
+            }
+
+            getConfig() {
+                return { ...this.config };
+            }
+
+            updateConfig(newConfig) {
+                this.config = { ...this.config, ...newConfig };
+                this.log('Configuration updated', newConfig);
+            }
+
+            log(message, data) {
+                addLogEntry(message, data, 'success');
+            }
+        }
+
+        // Initialize analytics proxy
+        const analytics = new MockAnalyticsProxy({
+            providers: {
+                mixpanel: {
+                    enabled: true,
+                    token: 'demo-token',
+                    debug: true,
+                },
+                ga4: {
+                    enabled: true,
+                    measurementId: 'G-DEMO123',
+                    debugMode: false,
+                },
+                logrocket: {
+                    enabled: false,
+                    appId: 'demo-app-id',
+                },
+                amplitude: {
+                    enabled: true,
+                    apiKey: 'demo-api-key',
+                },
+            },
+            globalProperties: {
+                appVersion: '1.0.0',
+                environment: 'demo',
+                platform: 'web',
+            },
+            enableDebug: true,
+        });
+
+        // Make analytics available globally for demo
+        window.analytics = analytics;
+
+        // Update provider status display
+        function updateProviderStatus() {
+            const status = analytics.getProviderStatus();
+            const container = document.getElementById('providerStatus');
+            container.innerHTML = '';
+
+            Object.entries(status).forEach(([name, enabled]) => {
+                const div = document.createElement('div');
+                div.style.margin = '10px 0';
+                div.innerHTML = `
+                    <strong>${name}:</strong> 
+                    <span class="status ${enabled ? 'enabled' : 'disabled'}">
+                        ${enabled ? 'ENABLED' : 'DISABLED'}
+                    </span>
+                    <button onclick="toggleProvider('${name}')" style="margin-left: 10px;">
+                        ${enabled ? 'Disable' : 'Enable'}
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        // Add log entry
+        function addLogEntry(message, data, type = 'info') {
+            const log = document.getElementById('eventLog');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const dataStr = data ? ` - ${JSON.stringify(data, null, 2)}` : '';
+            entry.textContent = `[${timestamp}] ${message}${dataStr}`;
+            
+            log.appendChild(entry);
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Global functions for demo
+        window.toggleProvider = function(name) {
+            const provider = analytics.providers.get(name);
+            if (provider.enabled) {
+                analytics.disableProvider(name);
+            } else {
+                analytics.enableProvider(name);
+            }
+            updateProviderStatus();
+        };
+
+        window.toggleAllProviders = function(enable) {
+            if (enable) {
+                analytics.enableAllProviders();
+            } else {
+                analytics.disableAllProviders();
+            }
+            updateProviderStatus();
+        };
+
+        window.trackEvent = function() {
+            analytics.trackEvent({
+                name: 'Demo Button Clicked',
+                properties: {
+                    buttonId: 'demo-button',
+                    timestamp: Date.now(),
+                    page: window.location.pathname,
+                },
+            });
+        };
+
+        window.identifyUser = function() {
+            analytics.identifyUser({
+                id: 'demo-user-' + Math.random().toString(36).substr(2, 9),
+                properties: {
+                    name: 'Demo User',
+                    email: 'demo@example.com',
+                    plan: 'free',
+                },
+            });
+        };
+
+        window.trackPageView = function() {
+            analytics.trackPageView({
+                url: '/demo-page',
+                title: 'Demo Page',
+                properties: {
+                    referrer: document.referrer || 'direct',
+                    utm_source: 'demo',
+                },
+            });
+        };
+
+        window.setGlobalProperties = function() {
+            analytics.setGlobalProperties({
+                demoMode: true,
+                lastAction: new Date().toISOString(),
+                sessionId: 'demo-session-' + Math.random().toString(36).substr(2, 9),
+            });
+        };
+
+        window.updateConfig = function() {
+            analytics.updateConfig({
+                globalProperties: {
+                    appVersion: '1.1.0',
+                    lastUpdated: new Date().toISOString(),
+                },
+            });
+        };
+
+        window.showConfig = function() {
+            const config = analytics.getConfig();
+            addLogEntry('Current Configuration', config);
+        };
+
+        window.clearLog = function() {
+            document.getElementById('eventLog').innerHTML = '';
+        };
+
+        // Initialize display
+        updateProviderStatus();
+        addLogEntry('Demo initialized successfully');
+    </script>
+</body>
+</html>
