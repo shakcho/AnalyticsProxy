@@ -374,44 +374,6 @@ Update the configuration at runtime.
 
 Get the current configuration.
 
-### Script Loading Utilities
-
-#### `ScriptLoader`
-
-Utility class for dynamically loading external scripts with caching and error handling.
-
-```typescript
-import { ScriptLoader } from "analytics-proxy";
-
-// Load a script
-await ScriptLoader.loadScript({
-  src: "https://example.com/script.js",
-  async: true,
-  onLoad: () => console.log("Script loaded"),
-  onError: (error) => console.error("Script failed to load", error),
-});
-
-// Check if script is loaded
-const isLoaded = ScriptLoader.isScriptLoaded("https://example.com/script.js");
-
-// Get loading promise
-const promise = ScriptLoader.getLoadingPromise("https://example.com/script.js");
-```
-
-#### `useScriptLoader()`
-
-React hook for script loading functionality.
-
-```typescript
-import { useScriptLoader } from "analytics-proxy";
-
-const MyComponent = () => {
-  const { loadScript, isScriptLoaded } = useScriptLoader();
-
-  // Use the hook methods
-};
-```
-
 ## TypeScript Support
 
 The library is built with TypeScript and provides comprehensive type definitions:
