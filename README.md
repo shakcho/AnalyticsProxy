@@ -32,7 +32,6 @@ The library has **zero runtime dependencies**. Analytics providers (Mixpanel, Am
 
 ### Optional Peer Dependencies
 
-- **React** `>=16.8.0` - Only required if using the `useScriptLoader` hook
 - Analytics provider SDKs are optional and loaded dynamically at runtime
 
 ## Quick Start
@@ -180,28 +179,6 @@ const AnalyticsExample = () => {
       {analyticsProxy && <p>Analytics ready!</p>}
     </div>
   );
-};
-```
-
-### Manual Script Loading (Optional)
-
-If you need fine-grained control over script loading, you can use the `ScriptLoader` utility:
-
-```tsx
-import { useScriptLoader } from "analytics-proxy";
-
-const ManualLoadingExample = () => {
-  const { loadScript, isScriptLoaded } = useScriptLoader();
-
-  // Load scripts manually if needed
-  useEffect(() => {
-    loadScript({
-      src: "https://example.com/custom-script.js",
-      async: true,
-    });
-  }, []);
-
-  return <div>Script loaded: {isScriptLoaded("...") ? "Yes" : "No"}</div>;
 };
 ```
 
